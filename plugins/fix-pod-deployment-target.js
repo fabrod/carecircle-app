@@ -1,0 +1,27 @@
+const { withDangerousMod } = require('@expo/config-plugins');
+const fs = require('fs');
+const path = require('path');
+
+module.exports = function withPodDeploymentTargetFix(config) {
+  return withDangerousMod(config, [
+    'ios',
+    async (config) => {
+      const podfilePath = path.join(config.modRequest.platformProjectRoot, 'Podfile');
+      let podfile = fs.readFileSync(podfilePath, 'utf8');
+      const marker = "IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'";
+      if (!podfile.includes(marker)) {
+        podfile += `
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |cfg|
+      cfg.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
+    end
+  end
+end
+`;
+        fs.writeFileSync(podfilePath, podfile);
+      }
+      return config;
+    },
+  ]);
+};
