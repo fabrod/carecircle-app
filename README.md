@@ -58,7 +58,7 @@ finished build using its EAS build ID:
 
 ```sh
 npm run build:simulator
-eas build:run --id <simulator-build-id>
+eas build:run --platform ios --id <simulator-build-id>
 ```
 
 Cold-launch the app and verify circle creation/joining and the main tabs. This
@@ -70,9 +70,9 @@ npm run build:ios
 eas submit --platform ios --profile production --id <production-build-id>
 ```
 
-Production builds increment the local `ios.buildNumber` automatically. The next
-build is planned as **1.0.0 (4)** from build number 3; check the value updated by
-EAS before committing it or creating another production build. Submission targets
+Production builds increment the local `ios.buildNumber` automatically. The crash
+fix release is **1.0.0 (4)**; check the value updated by EAS before committing it
+or creating another production build. Submission targets
 the existing App Store Connect app **6824046016**, bundle ID
 `com.fabrod.carecircle`. After upload, wait for Apple's processing and verify the
 new build on a physical iPhone through TestFlight before selecting it for review.

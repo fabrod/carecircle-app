@@ -36,9 +36,9 @@ for a subscription app with push notifications.
 ## Build & submit
 
 - [ ] `eas login` → `npm run build:simulator` → wait for the standalone simulator Release build to finish
-- [ ] Install with `eas build:run --id <simulator-build-id>`; cold-launch without Metro and verify circle creation/joining and all tabs
+- [ ] Install with `eas build:run --platform ios --id <simulator-build-id>`; cold-launch without Metro and verify circle creation/joining and all tabs
 - [ ] Confirm the RevenueCat production environment variable is configured, then run `npm run build:ios`
-- [ ] Confirm the production build number exceeds the previous uploaded build. Local versioning with `autoIncrement: true` plans build **1.0.0 (4)** from the current build number 3; EAS updates `app.json` during production build creation.
+- [ ] Confirm the production build number exceeds the previous uploaded build. The crash fix release is **1.0.0 (4)**. Local versioning with `autoIncrement: true` updates `app.json` during each production build creation; commit that updated value.
 - [ ] Submit that exact device build with `eas submit --platform ios --profile production --id <production-build-id>` to existing App Store Connect app **6824046016**
 - [ ] Wait for App Store Connect processing, install the new TestFlight build on a physical iPhone, and verify cold launch, create/join, tabs, reminder permissions, purchase, and restore
 - [ ] Select the verified new build in App Store Connect before submitting for review
