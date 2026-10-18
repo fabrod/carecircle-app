@@ -1,1 +1,48 @@
-{"build":{"development":{"developmentClient":true,"distribution":"internal"},"preview":{"distribution":"internal","ios":{"simulator":false}},"production":{"env":{"EXPO_PUBLIC_API_URL":"https://carecircle-app.onrender.com","EXPO_PUBLIC_REVENUECAT_API_KEY":"REVENUECAT_KEY_GOES_HERE"},"ios":{"image":"latest"}}},"cli":{"version":">= 13.0.0"},"submit":{"production":{"ios":{"appleId":"fabioanel@me.com"}}}}
+{
+  "cli": {
+    "version": ">= 13.0.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://carecircle-app.onrender.com"
+      },
+      "ios": {
+        "simulator": false
+      }
+    },
+    "simulator": {
+      "extends": "preview",
+      "environment": "preview",
+      "ios": {
+        "simulator": true,
+        "buildConfiguration": "Release",
+        "image": "latest"
+      }
+    },
+    "production": {
+      "environment": "production",
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://carecircle-app.onrender.com"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "fabioanel@me.com",
+        "ascAppId": "6824046016"
+      }
+    }
+  }
+}

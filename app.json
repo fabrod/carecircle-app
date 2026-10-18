@@ -1,1 +1,48 @@
-{"expo":{"android":{"adaptiveIcon":{"backgroundColor":"#FAF7F2","foregroundImage":"./assets/adaptive-icon.png"},"package":"com.fabrod.carecircle"},"icon":"./assets/icon.png","ios":{"bundleIdentifier":"com.fabrod.carecircle","supportsTablet":false},"name":"CareCircle","orientation":"portrait","plugins":[["expo-build-properties",{"ios":{"deploymentTarget":"16.4"}}],"./plugins/fix-pod-deployment-target"],"scheme":"carecircle","slug":"carecircle","splash":{"backgroundColor":"#FAF7F2","image":"./assets/splash.png","resizeMode":"contain"},"userInterfaceStyle":"automatic","version":"1.0.0"}}
+{
+  "expo": {
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FAF7F2",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "package": "com.fabrod.carecircle"
+    },
+    "icon": "./assets/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.fabrod.carecircle",
+      "supportsTablet": false,
+      "buildNumber": "4",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "name": "CareCircle",
+    "orientation": "portrait",
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.4"
+          }
+        }
+      ],
+      "expo-notifications",
+      "./plugins/fix-pod-deployment-target"
+    ],
+    "scheme": "carecircle",
+    "slug": "carecircle",
+    "splash": {
+      "backgroundColor": "#FAF7F2",
+      "image": "./assets/splash.png",
+      "resizeMode": "contain"
+    },
+    "userInterfaceStyle": "automatic",
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "58f58a5e-7c6b-4e3c-b1cf-b2d16b66a156"
+      }
+    }
+  }
+}

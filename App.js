@@ -45,7 +45,8 @@ import {
 // Constants & helpers
 // ---------------------------------------------------------------------------
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://carecircle-app.onrender.com';
+const API_TIMEOUT_MS = 25000;
 const TRIAL_DAYS = 14;
 const MAX_MEMBERS = 8;
 
@@ -68,15 +69,34 @@ const C = {
 };
 
 async function api(path, method = 'GET', body) {
-  const res = await fetch(`${API_URL}${path}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  let data = {};
-  try { data = await res.json(); } catch { /* non-JSON */ }
-  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
-  return data;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${API_URL}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+    let data = {};
+    try { data = await res.json(); } catch (e) {
+      if (controller.signal.aborted) throw e;
+      // Some server errors return HTML rather than JSON.
+    }
+    if (!res.ok) {
+      const error = new Error(data?.error || `Request failed (${res.status})`);
+      error.status = res.status;
+      throw error;
+    }
+    return data;
+  } catch (e) {
+    if (controller.signal.aborted) {
+      throw new Error('The server took too long to respond. Please try again.');
+    }
+    throw e;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 const uid = () =>
@@ -971,25 +991,30 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      await checkTrial();
-      await configurePurchases();
-      const s = await getSubscriptionStatus();
-      setSubActive(s.active);
-      const code = await AsyncStorage.getItem(CODE_KEY);
-      const name = await AsyncStorage.getItem(NAME_KEY);
-      if (code && name) {
-        try {
-          const c = await api(`/api/circle/${code}`);
-          setCircle(c);
-          setMemberName(name);
-          registerForPushNotifications(); // best-effort
-        } catch (e) {
-          console.warn('[boot] circle load failed:', e.message);
-          // Stale code (e.g. server restarted — MVP uses in-memory store)
-          await AsyncStorage.removeItem(CODE_KEY);
+      try {
+        await checkTrial();
+        await configurePurchases();
+        const s = await getSubscriptionStatus();
+        setSubActive(s.active);
+        const code = await AsyncStorage.getItem(CODE_KEY);
+        const name = await AsyncStorage.getItem(NAME_KEY);
+        if (code && name) {
+          try {
+            const c = await api(`/api/circle/${code}`);
+            setCircle(c);
+            setMemberName(name);
+            registerForPushNotifications(); // best-effort
+          } catch (e) {
+            console.warn('[boot] circle load failed:', e?.message || e);
+            // Only a missing circle invalidates the saved invite code.
+            if (e?.status === 404) await AsyncStorage.removeItem(CODE_KEY);
+          }
         }
+      } catch (e) {
+        console.warn('[boot] initialization failed:', e?.message || e);
+      } finally {
+        setBooted(true);
       }
-      setBooted(true);
     })();
   }, [checkTrial]);
 
